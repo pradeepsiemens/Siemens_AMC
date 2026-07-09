@@ -9,177 +9,173 @@
     <link rel="stylesheet" href="static/style.css">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="index.html">
-                <i class="bi bi-cloud-upload"></i> SRPAL AMC Portal
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
+    <header class="topbar">
+        <div class="topbar-left">
+            <div class="brand-mark">SIEMENS</div>
+        </div>
+        <div class="topbar-center">
+            <div class="topbar-title">SRPAL AMC Portal</div>
+            <div class="topbar-subtitle">AMC Checklist Submission Portal</div>
+        </div>
+        
+    </header>
+
+    <main class="page-shell">
+        <form id="uploadForm" enctype="multipart/form-data">
+            <section class="form-grid">
+            <article class="card-panel card-engineer">
+                <div class="card-panel-header">
+                    <h5>Engineer Details</h5>
+                </div>
+                <div class="card-panel-body">
+                    <div class="mb-4 input-icon-group">
+                        <label for="engineerName" class="form-label">Engineer Name <span class="text-danger">*</span></label>
+                        <div class="input-icon">
+                            <input type="text" class="form-control" id="engineerName" name="engineer_name" placeholder="Enter your full name" autocomplete="name" required>
+                        </div>
+                    </div>
+                    <div class="mb-4 input-icon-group">
+                        <label for="email" class="form-label">Email ID <span class="text-danger">*</span></label>
+                        <div class="input-icon">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="your.email@railways.gov.in" autocomplete="email">
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="card-panel card-station">
+                <div class="card-panel-header">
+                    <h5>Station Details</h5>
+                    <span class="badge badge-success">AMC ✓</span>
+                </div>
+                <div class="card-panel-body">
+                    <div class="mb-4">
+                        <label for="zone" class="form-label">Zonal Railway <span class="text-danger">*</span></label>
+                        <div class="input-icon">
+                            <select class="form-select" id="zone" name="zone" required>
+                                <option value="">-- Select Zonal Railway --</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="division" class="form-label">Division <span class="text-danger">*</span></label>
+                        <div class="input-icon">
+                            <select class="form-select" id="division" name="division" required disabled>
+                                <option value="">-- Select Division --</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="station" class="form-label">Station Name <span class="text-danger">*</span></label>
+                        <div class="input-icon">
+                            <select class="form-select" id="station" name="station" required disabled>
+                                <option value="">-- Select Station --</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="category" class="form-label">Category</label>
+                        <div class="input-icon">
+                            <input type="text" id="category" class="form-control" readonly placeholder="AMC category">
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="card-panel card-upload full-width-card">
+                <div class="card-panel-header">
+                    <h5>AMC Checklist Submission</h5>
+                </div>
+                <div class="card-panel-body upload-grid">
+                    <div class="upload-column">
+                        <label for="month" class="form-label">AMC Period</label>
+                        <select class="form-select" id="month" name="month" required>
+                            <option value="">-- Select Month --</option>
+                        </select>
+                    </div>
+
+                    <div class="upload-column upload-area">
+                        <div class="file-upload-box">
+                            <label class="drop-zone" for="fileInput">
+                                <div>
+                                    <h6>Drag & drop your file here</h6>
+                                    <p>or click Browse File to select.</p>
+                                    <span class="btn btn-upload">
+                                        Browse File
+                                    </span>
+                                </div>
+                            </label>
+                            <input type="file" class="form-control file-input-hidden" id="fileInput" name="file" accept=".pdf,.zip,.jpg,.jpeg,.png" required>
+                        </div>
+                        <div id="fileInfo" class="file-info-card" style="display: none;">
+                            <div>
+                                <div class="text-muted small">Selected file</div>
+                                <strong id="fileName"></strong>
+                            </div>
+                            <div class="text-end">
+                                <div class="text-muted small">File size</div>
+                                <strong id="fileSize"></strong>
+                            </div>
+                        </div>
+                        <div class="file-help-text">
+                            Allowed formats: PDF, ZIP, JPG, PNG (Max: 10 MB)
+                        </div>
+                    </div>
+
+                    <div class="upload-column remarks-column">
+                        <label for="remarks" class="form-label">Remarks</label>
+                        <textarea class="form-control" id="remarks" name="remarks" rows="8" placeholder="Enter any additional remarks or notes about this upload..."></textarea>
+                    </div>
+                </div>
+            </article>
+        </section>
+
+        <section class="actions-row">
+            <button type="reset" class="btn btn-secondary btn-reset">
+                Clear Form
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="index.html">Upload</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="dashboard.html">Dashboard</a>
-                    </li>
-                </ul>
+            <button type="submit" class="btn btn-primary btn-submit" id="submitBtn">
+                Submit Checklist
+            </button>
+        </section>
+
+        </form>
+
+        <div class="alert-wrapper">
+            <div id="successMessage" class="alert alert-success alert-dismissible fade d-none" role="alert" aria-live="polite">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                AMC Checklist uploaded successfully.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div id="errorMessage" class="alert alert-danger alert-dismissible fade d-none" role="alert" aria-live="assertive">
+                <i class="bi bi-exclamation-circle-fill me-2"></i>
+                <strong>Error!</strong> <span id="errorText"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         </div>
-    </nav>
+    </main>
 
-    <div class="container mt-5 mb-5">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="card shadow-lg">
-                    <div class="card-header bg-primary text-white">
-                        <h3 class="mb-0">
-                            <i class="bi bi-file-earmark-arrow-up"></i> AMC Checklist Upload
-                        </h3>
-                    </div>
-                    <div class="card-body">
-                        <form id="uploadForm" enctype="multipart/form-data">
-                            <!-- Engineer Information Section -->
-                            <div class="section-header">
-                                <h5 class="mb-3">Engineer Information</h5>
-                            </div>
+    <footer class="page-footer">
+        <div>© 2026 SRPAL AMC Portal. All rights reserved.</div>
+    </footer>
 
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="engineerName" class="form-label">Engineer Name <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="engineerName" name="engineer_name" 
-                                           placeholder="Enter your full name" autocomplete="name" required>
-                                    <small class="form-text text-muted">Your full name as per records</small>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="email" class="form-label">Email ID</label>
-                                    <input type="email" class="form-control" id="email" name="email" 
-                                           placeholder="your.email@railways.gov.in" autocomplete="email">
-                                    <small class="form-text text-muted">Your official email address</small>
-                                </div>
-                            </div>
-
-                            <!-- Railway Information Section -->
-                            <div class="section-header">
-                                <h5 class="mb-3">Railway Information</h5>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="zone" class="form-label">Zonal Railway <span class="text-danger">*</span></label>
-                                    <select class="form-select" id="zone" name="zone" required>
-                                        <option value="">-- Select Zonal Railway --</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="division" class="form-label">Division <span class="text-danger">*</span></label>
-                                    <select class="form-select" id="division" name="division" required disabled>
-                                        <option value="">-- Select Division --</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="station" class="form-label">Station Name <span class="text-danger">*</span></label>
-                                    <select class="form-select" id="station" name="station" required disabled>
-                                        <option value="">-- Select Station --</option>
-                                    </select>
-                                    <div class="mt-2">
-                                        <label for="category" class="form-label small">Category</label>
-                                        <input type="text" id="category" class="form-control form-control-sm" readonly placeholder="Auto-filled from Station Master">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="month" class="form-label">AMC Month <span class="text-danger">*</span></label>
-                                    <select class="form-select" id="month" name="month" required>
-                                        <option value="">-- Select Month --</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- File Upload Section -->
-                            <div class="section-header">
-                                <h5 class="mb-3">File Upload</h5>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="fileInput" class="form-label">Select File <span class="text-danger">*</span></label>
-                                <div class="file-upload-wrapper">
-                                    <input type="file" class="form-control" id="fileInput" name="file" 
-                                           accept=".pdf,.zip,.jpg,.jpeg,.png" required>
-                                    <small class="form-text text-muted d-block mt-2">
-                                        <i class="bi bi-info-circle"></i> Allowed formats: PDF, ZIP, JPG, PNG (Max: 10 MB)
-                                    </small>
-                                </div>
-                                <div id="fileInfo" class="mt-3" style="display: none;">
-                                    <div class="file-upload-summary">
-                                        <div class="d-flex flex-column flex-sm-row justify-content-between gap-2">
-                                            <div>
-                                                <div class="text-muted small">Selected file</div>
-                                                <strong id="fileName"></strong>
-                                            </div>
-                                            <div class="text-end">
-                                                <div class="text-muted small">File size</div>
-                                                <strong id="fileSize"></strong>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Remarks Section -->
-                            <div class="section-header">
-                                <h5 class="mb-3">Additional Information</h5>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="remarks" class="form-label">Remarks</label>
-                                <textarea class="form-control" id="remarks" name="remarks" rows="4" 
-                                          placeholder="Enter any additional remarks or notes about this upload..."></textarea>
-                                <small class="form-text text-muted">Optional - Maximum 500 characters</small>
-                            </div>
-
-                            <!-- Form Actions -->
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-5">
-                                <button type="reset" class="btn btn-secondary">
-                                    <i class="bi bi-arrow-clockwise"></i> Reset
-                                </button>
-                                <button type="submit" class="btn btn-primary" id="submitBtn">
-                                    <i class="bi bi-cloud-upload"></i> Upload Checklist
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+    <div class="modal fade" id="duplicateModal" tabindex="-1" aria-labelledby="duplicateModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="duplicateModalLabel">AMC Already Submitted</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
-                <!-- Success Message -->
-                <div id="successMessage" class="alert alert-success alert-dismissible fade mt-3 d-none" role="alert" aria-live="polite">
-                    <i class="bi bi-check-circle-fill me-2"></i>
-                    AMC Checklist uploaded successfully.
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="modal-body">
+                    <p>This station AMC period is already submitted.</p>
+                    <p>Please contact administrator to delete existing record and try again.</p>
                 </div>
-
-                <!-- Error Message -->
-                <div id="errorMessage" class="alert alert-danger alert-dismissible fade mt-3 d-none" role="alert" aria-live="assertive">
-                    <i class="bi bi-exclamation-circle-fill me-2"></i>
-                    <strong>Error!</strong> <span id="errorText"></span>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Footer -->
-    <footer class="bg-light text-center py-4 mt-5 border-top">
-        <div class="container">
-            <p class="mb-0 text-muted">
-                <small>&copy; 2026 SRPAL AMC Portal. All rights reserved.</small>
-            </p>
-        </div>
-    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -263,15 +259,27 @@
                 .sort();
         }
 
+        function resetDuplicateStateAndClearFile() {
+            hideDuplicateModal();
+            duplicateBlocked = false;
+            clearSelectedFile();
+            document.getElementById('fileInput').disabled = false;
+            document.getElementById('submitBtn').disabled = true;
+        }
+
         // Update divisions when zone changes
         document.getElementById('zone').addEventListener('change', function() {
+            resetDuplicateStateAndClearFile();
+
             const zone = this.value;
             const divisionSelect = document.getElementById('division');
             const stationSelect = document.getElementById('station');
-            
+            const categoryInput = document.getElementById('category');
+
             divisionSelect.innerHTML = '<option value="">-- Select Division --</option>';
             stationSelect.innerHTML = '<option value="">-- Select Station --</option>';
-            
+            categoryInput.value = '';
+
             if (zone) {
                 const divisions = getDivisions(zone);
                 divisions.forEach(division => {
@@ -284,18 +292,22 @@
             } else {
                 divisionSelect.disabled = true;
             }
-            
+
             stationSelect.disabled = true;
         });
 
         // Update stations when division changes
         document.getElementById('division').addEventListener('change', function() {
+            resetDuplicateStateAndClearFile();
+
             const zone = document.getElementById('zone').value;
             const division = this.value;
             const stationSelect = document.getElementById('station');
-            
+            const categoryInput = document.getElementById('category');
+
             stationSelect.innerHTML = '<option value="">-- Select Station --</option>';
-            
+            categoryInput.value = '';
+
             if (zone && division) {
                 const stations = getStations(zone, division);
                 stations.forEach(station => {
@@ -312,6 +324,8 @@
 
         // When a station is selected, auto-fill category and trigger duplicate check if month selected
         document.getElementById('station').addEventListener('change', function() {
+            resetDuplicateStateAndClearFile();
+
             const stationName = this.value;
             const month = document.getElementById('month').value;
             const categoryInput = document.getElementById('category');
@@ -323,24 +337,20 @@
                 categoryInput.value = '';
             }
 
-            // If both station and month selected, check for duplicate
             if (stationName && month) {
                 checkDuplicate(stationName, month);
-            } else {
-                // enable submit if nothing blocking
-                document.getElementById('submitBtn').disabled = false;
             }
         });
 
         // When month changes, if station already selected, run duplicate check
         document.getElementById('month').addEventListener('change', function() {
+            resetDuplicateStateAndClearFile();
+
             const month = this.value;
             const stationName = document.getElementById('station').value;
 
             if (stationName && month) {
                 checkDuplicate(stationName, month);
-            } else {
-                document.getElementById('submitBtn').disabled = false;
             }
         });
 
@@ -358,20 +368,19 @@
             // create script tag for JSONP
             const script = document.createElement('script');
             script.id = 'check-jsonp';
-            script.src = APPS_SCRIPT_URL + '?action=check&station=' + encodeURIComponent(station) + '&period=' + encodeURIComponent(period) + '&callback=handleDuplicateCheck';
+            // add timestamp cache-buster to ensure request always runs
+            script.src = APPS_SCRIPT_URL + '?action=check&station=' + encodeURIComponent(station) + '&period=' + encodeURIComponent(period) + '&callback=handleDuplicateCheck' + '&_=' + Date.now();
             script.async = true;
 
             // timeout: if JSONP doesn't call back, allow upload
             const timer = setTimeout(() => {
                 script.remove();
-                try { delete window.handleDuplicateCheck; } catch (e) {}
                 console.error('Duplicate check JSONP timeout');
                 submitBtn.disabled = false;
             }, 8000);
 
             script.onerror = function() {
                 clearTimeout(timer);
-                try { delete window.handleDuplicateCheck; } catch (e) {}
                 console.error('Duplicate check JSONP script error');
                 submitBtn.disabled = false;
             };
@@ -379,30 +388,72 @@
             document.head.appendChild(script);
         }
 
+        let duplicateBlocked = false;
+
+        function clearSelectedFile() {
+            const fileInput = document.getElementById('fileInput');
+            const fileInfo = document.getElementById('fileInfo');
+            fileInput.value = '';
+            fileInfo.style.display = 'none';
+            document.getElementById('fileName').textContent = '';
+            document.getElementById('fileSize').textContent = '';
+        }
+
+        function setDuplicateState(isBlocked) {
+            duplicateBlocked = isBlocked;
+            const submitBtn = document.getElementById('submitBtn');
+            const fileInput = document.getElementById('fileInput');
+
+            submitBtn.disabled = isBlocked;
+            fileInput.disabled = isBlocked;
+        }
+
+        const duplicateModalElement = document.getElementById('duplicateModal');
+        const duplicateModal = duplicateModalElement ? new bootstrap.Modal(duplicateModalElement, {
+            backdrop: 'static',
+            keyboard: false
+        }) : null;
+
+        function showDuplicateModal() {
+            if (duplicateModal) {
+                duplicateModal.show();
+            }
+        }
+
+        function hideDuplicateModal() {
+            if (duplicateModal) {
+                duplicateModal.hide();
+            }
+        }
+
         // Global JSONP callback for duplicate check: handleDuplicateCheck({exists:true/false})
         window.handleDuplicateCheck = function(data) {
             const submitBtn = document.getElementById('submitBtn');
+            const fileInput = document.getElementById('fileInput');
             const errorAlert = document.getElementById('errorMessage');
             const errorText = document.getElementById('errorText');
 
             try {
                 if (data && data.exists === true) {
-                    submitBtn.disabled = true;
-                    showError('AMC already submitted. Please contact administrator to delete existing record and try again.');
+                    setDuplicateState(true);
+                    clearSelectedFile();
+                    showDuplicateModal();
                 } else {
-                    // clear duplicate-related error and enable upload
+                    duplicateBlocked = false;
+                    hideDuplicateModal();
                     if (errorText && errorText.textContent && errorText.textContent.includes('AMC already submitted')) {
                         errorText.textContent = '';
                         errorAlert.classList.add('d-none');
                         errorAlert.classList.remove('show');
                     }
                     submitBtn.disabled = false;
+                    fileInput.disabled = false;
                 }
             } catch (err) {
                 console.error('handleDuplicateCheck error:', err);
                 submitBtn.disabled = false;
+                fileInput.disabled = false;
             } finally {
-                // cleanup JSONP script
                 const scr = document.getElementById('check-jsonp');
                 if (scr) scr.remove();
             }
@@ -437,6 +488,11 @@
         // Handle form submission
         document.getElementById('uploadForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+
+            if (duplicateBlocked === true) {
+                showDuplicateModal();
+                return;
+            }
 
             const submitBtn = document.getElementById('submitBtn');
             const fileInput = document.getElementById('fileInput');
@@ -499,6 +555,8 @@
         function showSuccess() {
             const successAlert = document.getElementById('successMessage');
             const errorAlert = document.getElementById('errorMessage');
+
+            hideDuplicateModal();
 
             if (!successAlert.classList.contains('show')) {
                 successAlert.classList.remove('d-none');
