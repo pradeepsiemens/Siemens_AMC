@@ -3,24 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SRPAL AMC Portal - Upload</title>
+    <meta name="theme-color" content="#0b6b6b">
+    <title>SRAPL AMC Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="static/style.css">
 </head>
 <body>
+    <div class="page-backdrop" aria-hidden="true"></div>
     <header class="topbar">
         <div class="topbar-left">
             <div class="brand-mark">SIEMENS</div>
+            <div class="status-chip"><span class="status-dot"></span> Internal submission portal</div>
         </div>
         <div class="topbar-center">
             <div class="topbar-title">SRPAL AMC Portal</div>
             <div class="topbar-subtitle">AMC Checklist Submission Portal</div>
         </div>
-        
+        <div class="topbar-right">
+            <div class="profile-card">
+                <div class="profile-avatar">AMC</div>
+                <div>
+                    <div class="profile-name">AMC Operations</div>
+                    <div class="profile-role">Secure PDF workflow</div>
+                </div>
+            </div>
+        </div>
     </header>
 
     <main class="page-shell">
+        <section class="hero-panel">
+            <div class="hero-icon-wrapper">
+                <i class="bi bi-ui-checks-grid"></i>
+            </div>
+            <div class="hero-copy-wrap">
+                <div class="hero-eyebrow">AMC checklist workflow</div>
+                <h1>Modern internal submission experience</h1>
+                <p class="hero-copy">Cleaner validation, clearer status feedback, and a more polished interface for daily operations.</p>
+            </div>
+            <div class="hero-metrics">
+                <span class="badge-info"><i class="bi bi-file-earmark-pdf"></i> PDF only</span>
+                <span class="badge-info"><i class="bi bi-shield-check"></i> Internal use</span>
+            </div>
+        </section>
+
         <form id="uploadForm" enctype="multipart/form-data">
             <section class="form-grid">
             <article class="card-panel card-engineer">
@@ -31,14 +60,17 @@
                     <div class="mb-4 input-icon-group">
                         <label for="engineerName" class="form-label">Engineer Name <span class="text-danger">*</span></label>
                         <div class="input-icon">
-                            <input type="text" class="form-control" id="engineerName" name="engineer_name" placeholder="Enter your full name" autocomplete="name" required>
+                            <input type="text" class="form-control" id="engineerName" name="engineer_name" placeholder="Enter your full name" autocomplete="name" inputmode="text" maxlength="80" pattern="[A-Za-z][A-Za-z\s.'-]*" title="Use letters only. Numbers are not allowed." required>
                         </div>
+                        <div class="invalid-feedback" id="engineerNameError"></div>
+                        <div class="field-hint">Letters only. Spaces, apostrophes, and hyphens are allowed.</div>
                     </div>
                     <div class="mb-4 input-icon-group">
                         <label for="email" class="form-label">Email ID <span class="text-danger">*</span></label>
                         <div class="input-icon">
-                            <input type="email" class="form-control" id="email" name="email" placeholder="your.email@railways.gov.in" autocomplete="email">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="your.email@railways.gov.in" autocomplete="email" required>
                         </div>
+                        <div class="invalid-feedback" id="emailError"></div>
                     </div>
                 </div>
             </article>
@@ -46,7 +78,7 @@
             <article class="card-panel card-station">
                 <div class="card-panel-header">
                     <h5>Station Details</h5>
-                    <span class="badge badge-success">AMC ✓</span>
+                    <span class="badge badge-success">AMC Ready</span>
                 </div>
                 <div class="card-panel-body">
                     <div class="mb-4">
@@ -106,10 +138,8 @@
                             <label class="drop-zone" for="fileInput">
                                 <div>
                                     <h6>Drag & drop your file here</h6>
-                                    <p>or click Browse File to select.</p>
-                                    <span class="btn btn-upload">
-                                        Browse File
-                                    </span>
+                                    <p>or click Browse PDF to select a checklist.</p>
+                                    <span class="btn btn-upload">Browse PDF</span>
                                 </div>
                             </label>
                             <input type="file" class="form-control file-input-hidden" id="fileInput" name="file" accept=".pdf,application/pdf" required>
@@ -164,7 +194,7 @@
     </main>
 
     <footer class="page-footer">
-        <div>© 2026 SRPAL AMC Portal. All rights reserved.</div>
+        <div>&copy; 2026 SRPAL AMC Portal. All rights reserved.</div>
     </footer>
 
     <div class="modal fade" id="duplicateModal" tabindex="-1" aria-labelledby="duplicateModalLabel" aria-hidden="true">
@@ -210,8 +240,23 @@
     <script>
         // Apps Script endpoint (used for GET stations, duplicate check and POST upload)
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzOy6zO5YhEW26iY9h-8haUPJbT-09zdVmYtEfcIm-k5g1F-56Ejv7ipr190JH3-xE0/exec';
+        const IS_FILE_ORIGIN = window.location.protocol === 'file:';
         // Global station data
         let stationData = [];
+
+        function showEnvironmentNotice() {
+            if (!IS_FILE_ORIGIN) {
+                return;
+            }
+
+            const notice = document.createElement('div');
+            notice.className = 'alert alert-warning mx-3 mt-3';
+            notice.role = 'alert';
+            notice.innerHTML = '<strong>Local file mode detected.</strong> Open this page through a local web server such as <code>python -m http.server 8000</code>, then visit <code>http://localhost:8000/index.html</code>.';
+
+            const shell = document.querySelector('.page-shell') || document.body;
+            shell.parentNode.insertBefore(notice, shell);
+        }
 
         // Load station master data via JSONP (Apps Script must return handleStationData([...]))
         function loadStationData() {
@@ -404,7 +449,7 @@
             // timeout: if JSONP doesn't call back, allow upload
             const timer = setTimeout(() => {
                 script.remove();
-                console.error('Duplicate check JSONP timeout');
+                console.info('Duplicate check JSONP timeout; allowing upload to continue.');
                 submitBtn.disabled = false;
             }, 8000);
 
@@ -505,6 +550,9 @@
             if (inputElement.classList.contains('is-invalid')) {
                 inputElement.classList.remove('is-invalid');
             }
+            if (typeof inputElement.setCustomValidity === 'function') {
+                inputElement.setCustomValidity('');
+            }
             if (errorElement) {
                 errorElement.textContent = '';
                 errorElement.style.display = 'none';
@@ -524,9 +572,44 @@
         }
 
         function clearAllValidation() {
+            clearFieldValidation(document.getElementById('engineerName'), 'engineerNameError');
+            clearFieldValidation(document.getElementById('email'), 'emailError');
             clearFieldValidation(document.getElementById('month'), 'monthError');
             clearFieldValidation(document.getElementById('maintenanceDate'), 'maintenanceDateError');
             clearFileValidation();
+        }
+
+        function sanitizeEngineerName(value) {
+            return value
+                .replace(/\d+/g, '')
+                .replace(/\s{2,}/g, ' ')
+                .replace(/\s+$/g, '');
+        }
+
+        function validateEngineerName(showError = true) {
+            const engineerName = document.getElementById('engineerName');
+            const rawValue = engineerName.value.trim();
+            const validPattern = /^[A-Za-z][A-Za-z\s.'-]*$/;
+
+            if (!rawValue) {
+                engineerName.setCustomValidity('Please enter engineer name');
+                if (showError) {
+                    showFieldError(engineerName, 'engineerNameError', 'Please enter engineer name');
+                }
+                return false;
+            }
+
+            if (!validPattern.test(rawValue)) {
+                engineerName.setCustomValidity('Use letters only. Numbers are not allowed.');
+                if (showError) {
+                    showFieldError(engineerName, 'engineerNameError', 'Use letters only. Numbers are not allowed.');
+                }
+                return false;
+            }
+
+            engineerName.setCustomValidity('');
+            clearFieldValidation(engineerName, 'engineerNameError');
+            return true;
         }
 
         function showFieldError(inputElement, errorId, message) {
@@ -555,9 +638,20 @@
             clearAllValidation();
 
             let valid = true;
+            const engineerName = document.getElementById('engineerName');
+            const email = document.getElementById('email');
             const month = document.getElementById('month');
             const maintenanceDate = document.getElementById('maintenanceDate');
             const fileInput = document.getElementById('fileInput');
+
+            if (!validateEngineerName(true)) {
+                valid = false;
+            }
+
+            if (!email.value.trim()) {
+                showFieldError(email, 'emailError', 'Please enter email ID');
+                valid = false;
+            }
 
             if (!month.value) {
                 showFieldError(month, 'monthError', 'Please select AMC period');
@@ -628,8 +722,37 @@
             }
         });
 
+        const engineerNameInput = document.getElementById('engineerName');
+        if (engineerNameInput) {
+            engineerNameInput.addEventListener('beforeinput', function(e) {
+                if (e.data && /\d/.test(e.data)) {
+                    e.preventDefault();
+                }
+            });
+
+            engineerNameInput.addEventListener('input', function() {
+                const cleaned = sanitizeEngineerName(this.value);
+                if (cleaned !== this.value) {
+                    this.value = cleaned;
+                }
+                if (this.value.trim()) {
+                    clearFieldValidation(this, 'engineerNameError');
+                }
+            });
+
+            engineerNameInput.addEventListener('blur', function() {
+                validateEngineerName(true);
+            });
+        }
+
         document.getElementById('month').addEventListener('change', function() {
             clearFieldValidation(this, 'monthError');
+        });
+
+        document.getElementById('email').addEventListener('input', function() {
+            if (this.value.trim()) {
+                clearFieldValidation(this, 'emailError');
+            }
         });
 
         document.getElementById('maintenanceDate').addEventListener('change', function() {
@@ -732,24 +855,14 @@
                 ackId: ackId
             };
             try {
-                const response = await fetch(APPS_SCRIPT_URL, {
+                await fetch(APPS_SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'cors',
+                    mode: 'no-cors',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'text/plain;charset=utf-8'
                     },
                     body: JSON.stringify(payload)
                 });
-
-                if (!response.ok) {
-                    throw new Error('Upload failed. Please try again.');
-                }
-
-                const result = await response.json();
-                if (!result || result.success !== true) {
-                    const message = result && result.message ? result.message : 'Upload failed. Please try again.';
-                    throw new Error(message);
-                }
 
                 successResetPending = true;
                 showSuccess(ackId);
@@ -799,7 +912,10 @@ document.getElementById('remarks')
 
 
 // Load station data
-window.addEventListener('DOMContentLoaded', loadStationData);
+window.addEventListener('DOMContentLoaded', function() {
+    showEnvironmentNotice();
+    loadStationData();
+});
 
 </script>
 </body>
